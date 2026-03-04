@@ -1,0 +1,98 @@
+/* 1. Importamos las fuentes oficiales de Anji Gelato: "Fredoka" (títulos) y "Nunito" (textos) */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;600;700&display=swap');
+
+/* 2. Modificamos el "ADN" de Pico.css con los colores de Anji Gelato */
+:root {
+    /* --- Paleta de colores Anji Gelato --- */
+    --gelato-pink: #FFB7B2;  /* Fresa cremosa */
+    --gelato-mint: #B5EAD7;  /* Menta fresca */
+    --gelato-cream: #FFF5E1; /* Vainilla (Fondo) */
+    --panda-dark: #2D2D2D;   /* Gris oscuro Panda para textos */
+
+    /* --- Sobrescribimos Pico.css --- */
+    --pico-font-family: 'Nunito', sans-serif;
+    --pico-color: var(--panda-dark);
+    --pico-background-color: var(--gelato-cream);
+    
+    /* Colores principales (Botones y enlaces) */
+    --pico-primary: var(--gelato-pink); 
+    --pico-primary-hover: var(--gelato-mint); 
+    --pico-primary-inverse: var(--panda-dark); /* Texto oscuro dentro del botón rosa */
+    
+    /* Títulos oscuros estilo Panda */
+    --pico-h1-color: var(--panda-dark);
+    --pico-h2-color: var(--panda-dark);
+    --pico-h3-color: var(--panda-dark);
+}
+
+/* 3. Fondo con textura dulce estilo heladería */
+body {
+    /* Crea un patrón de puntitos rosa muy suave de fondo */
+    background-image: radial-gradient(rgba(255, 183, 178, 0.4) 2px, transparent 2px);
+    background-size: 30px 30px;
+}
+
+/* 4. Tipografía dulce y redondeada para los títulos */
+h1, h2, h3, h4, h5, h6, strong {
+    font-family: 'Fredoka', sans-serif;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+}
+
+/* 5. Estilo "Bola de Helado" para las tarjetas de productos */
+#contenedor-productos article {
+    /* Animación fluida con efecto rebote */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    border-radius: 30px; /* Bordes súper redondeados */
+    background-color: white; 
+    border: none;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.05); /* Sombra muy suave */
+    padding: 25px;
+    text-align: center; /* Centramos el texto del producto */
+}
+
+/* Efecto al pasar el ratón: La tarjeta "salta" hacia ti */
+#contenedor-productos article:hover {
+    transform: translateY(-12px); 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12); 
+}
+
+/* 6. Personalización de los botones */
+button, 
+[type="submit"], 
+[role="button"] {
+    border-radius: 50px !important; /* Forma de píldora redonda */
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0px 5px 0px rgba(0,0,0,0.1); /* Sombra inferior estilo botón 3D */
+    transition: all 0.2s ease;
+    color: var(--panda-dark) !important;
+    border: 3px solid white !important; /* Borde blanco para que parezca un sticker */
+}
+
+/* Efecto de pulsar el botón (se hunde) */
+button:hover, 
+[type="submit"]:hover, 
+[role="button"]:hover {
+    transform: translateY(3px);
+    box-shadow: 0px 2px 0px rgba(0,0,0,0.1);
+}
+
+/* 7. Toque especial a la barra de navegación superior */
+nav {
+    background-color: white;
+    padding: 10px 30px !important;
+    border-radius: 0 0 30px 30px; /* Curvas solo abajo */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    margin-bottom: 50px;
+    border-bottom: 5px solid var(--gelato-pink); /* Línea fresa debajo del menú */
+}
+
+nav strong {
+    font-size: 1.5rem;
+}

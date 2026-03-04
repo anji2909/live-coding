@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Mi Tienda</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>🛒 El Gran Mercadillo</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/index.html">Catálogo</a></li>
+                <li><a href="/login.html">Iniciar Sesión</a></li>
+                <li><a href="/vender.html" role="button">Vender algo</a></li>
+            </ul>
+        </nav>
+
+        <h2>Productos Destacados</h2>
+        
+        <div id="contenedor-productos" class="grid">
+            <p aria-busy="true">Cargando productos...</p>
+        </div>
+
+    </main>
+
+    <script>
+        // Cuando la página termine de cargar, ejecutamos esto
+        document.addEventListener('DOMContentLoaded', async () => {
+            const contenedor = document.getElementById('contenedor-productos');
+            
+            try {
+                // 1. Llamamos a nuestra API
+                const respuesta = await fetch('/api/catalogo');
+                const productos = await respuesta.json();
+
+                // Limpiamos el mensaje de "Cargando..."
+                contenedor.innerHTML = '';
+
+                // 2. Comprobamos si hay productos
+                if (productos.length === 0) {
+                    contenedor.innerHTML = '<p>Aún no hay productos a la venta. ¡Sé el primero en vender algo!</p>';
+                    return;
+                }
+
+                // 3. Por cada producto, creamos una tarjeta HTML (article)
+                productos.forEach(prod => {
+                    const tarjeta = document.createElement('article');
+                    tarjeta.innerHTML = `
+                        <header>
+                            <strong>${prod.nombre}</strong>
+                        </header>
+                        <p>${prod.descripcion}</p>
+                        <h2>${prod.precio} €</h2>
+                        <footer>
+                            <small>Vendido por: <em>${prod.vendedor}</em></small><br><br>
+                            <button onclick="comprar(${prod.id})" class="secondary">Añadir al Carrito</button>
+                        </footer>
+                    `;
+                    // Añadimos la tarjeta al contenedor
+                    contenedor.appendChild(tarjeta);
+                });
+
+            } catch (error) {
+                console.error(error);
+                contenedor.innerHTML = '<p style="color:red;">Error al cargar el catálogo.</p>';
+            }
+        });
+
+// Función real para el botón de comprar
+async function comprar(idProducto) {
+    try {
+        // Hacemos una petición POST silenciosa al servidor
+        const respuesta = await fetch('/api/carrito', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ producto_id: idProducto }) // Enviamos el ID del producto
+        });
+
+        // Si el servidor nos bloquea con un 401 (No autorizado)
+        if (respuesta.status === 401) {
+            alert('🛑 Debes iniciar sesión para poder comprar.');
+            window.location.href = '/login.html'; // Lo mandamos al login
+            return;
+        }
+
+        // Si todo va bien, leemos la respuesta
+        const datos = await respuesta.json();
+        
+        // Confirmamos al usuario y le damos la opción de ir a pagar
+        if(confirm(datos.mensaje + '. Tienes ' + datos.totalItems + ' artículos en tu carrito.\n\n¿Quieres ir al carrito para finalizar la compra?')) {
+            window.location.href = '/carrito';
+        }
+
+    } catch (error) {
+        console.error('Error al añadir al carrito:', error);
+    }
+}
+
+    </script>
+</body>
+</html>

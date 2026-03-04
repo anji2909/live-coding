@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel - Mi Tienda</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>🛒 Mi Panel de Control</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/index.html">Ver Catálogo</a></li>
+                <li><a href="/vender.html" role="button">Vender algo nuevo</a></li>
+                <li><a href="/api/logout" class="secondary">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+
+        <div class="grid">
+            <article>
+                <h3>🛍️ Mis Compras</h3>
+                <table role="grid">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-compras">
+                        <tr><td colspan="3" aria-busy="true">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </article>
+
+            <article>
+                <h3>📦 Mis Productos en Venta</h3>
+                <table role="grid">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-productos">
+                        <tr><td colspan="3" aria-busy="true">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // --- CARGAR MIS COMPRAS ---
+            const tbodyCompras = document.getElementById('tabla-compras');
+            try {
+                const resCompras = await fetch('/api/mis-compras');
+                const compras = await resCompras.json();
+                
+                tbodyCompras.innerHTML = '';
+                if (compras.length === 0) {
+                    tbodyCompras.innerHTML = '<tr><td colspan="3">Aún no has comprado nada.</td></tr>';
+                } else {
+                    compras.forEach(compra => {
+                        const fecha = new Date(compra.fecha).toLocaleString('es-ES');
+                        tbodyCompras.innerHTML += `
+                            <tr>
+                                <td>${compra.nombre}</td>
+                                <td>${compra.precio} €</td>
+                                <td><small>${fecha}</small></td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                tbodyCompras.innerHTML = '<tr><td colspan="3">Error al cargar compras.</td></tr>';
+            }
+
+            // --- CARGAR MIS PRODUCTOS ---
+            const tbodyProductos = document.getElementById('tabla-productos');
+            try {
+                const resProductos = await fetch('/api/mis-productos');
+                const productos = await resProductos.json();
+                
+                tbodyProductos.innerHTML = '';
+                if (productos.length === 0) {
+                    tbodyProductos.innerHTML = '<tr><td colspan="3">No tienes productos en venta.</td></tr>';
+                } else {
+                    productos.forEach(prod => {
+                        tbodyProductos.innerHTML += `
+                            <tr>
+                                <td><strong>${prod.nombre}</strong></td>
+                                <td>${prod.precio} €</td>
+                                <td><small>En venta</small></td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                tbodyProductos.innerHTML = '<tr><td colspan="3">Error al cargar productos.</td></tr>';
+            }
+
+        });
+    </script>
+</body>
+</html>
